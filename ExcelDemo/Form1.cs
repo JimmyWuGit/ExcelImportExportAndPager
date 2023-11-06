@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -39,13 +40,13 @@ namespace ExcelDemo
              
             if (!File.Exists(filePath))
             {
-                MessageBox.Show("导入的文件不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("导入的文件不存在！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             try
             {
-                dtTotal = ExcelHelper.ImportToTable(filePath, 6);
+                dtTotal = ExcelHelper.ImportToTable(filePath, 6, true, new string[] { "是否替代料", "工单号" });
                 if (dtTotal != null)
                 {
                     //this.dgvData.DataSource = dtTotal;
@@ -93,6 +94,21 @@ namespace ExcelDemo
             }
             this.dgvData.DataSource = dt;
 
+            //对于替代料的行，用不同颜色突出显示
+            for(int i = 0; i < dgvData.Rows.Count; i++)
+            {
+                for(int j = 0; j < dgvData.Columns.Count; j++)
+                {
+                    var result = dgvData.Rows[i].Cells[j].Value.ToString();
+                    if (result == "是")
+                    {
+                        dgvData.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
+                    }
+                    //关闭dgv的列自动排序功能
+                    dgvData.Columns[j].SortMode = DataGridViewColumnSortMode.NotSortable;
+                }
+            }
+
             paginationControl1.SetPage(currentPage);
         }
 
@@ -106,7 +122,7 @@ namespace ExcelDemo
             DataTable dt = (DataTable)dgvData.DataSource;
             if (dt == null || dt.Rows.Count <= 0)
             {
-                MessageBox.Show("没有数据导出！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("没有数据导出！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }                
 
