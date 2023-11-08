@@ -47,7 +47,7 @@ namespace ExcelDemo
             try
             {
                 dtTotal = ExcelHelper.ImportToTable(filePath, 6, true, new string[] { "是否替代料", "工单号" });
-                if (dtTotal != null)
+                if (dtTotal != null && dtTotal.Rows.Count>0)
                 {
                     //this.dgvData.DataSource = dtTotal;
                     //调用委托，进行分页操作
@@ -131,7 +131,7 @@ namespace ExcelDemo
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "保存文件";
             saveFileDialog.Filter = "Excel 文件(*.xls)|*.xls|Excel 文件(*.xlsx)|*.xlsx|所有文件(*.*)|*.*";
-            saveFileDialog.FileName = filePath + "上料记录.xls";
+            saveFileDialog.FileName = filePath + "上料记录.xlsx";
             if(saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string fileName = saveFileDialog.FileName;
